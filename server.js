@@ -18,6 +18,14 @@ const holidays = [
   { date: "12/25/2023", name: "Natal" },
 ];
 
+function getHolidaysByMonth(idMonth) {
+  return holidays.filter((holiday) => {
+    const holidayDateParts = holiday.date.split("/");
+    const holidayMonth = parseInt(holidayDateParts[0]);
+    return holidayMonth === idMonth;
+  });
+}
+
 server.get("/holidays", (_, res) => {
   res.send(holidays);
 });
@@ -32,6 +40,18 @@ server.get("/is-today-holiday", (_, res) => {
     return;
   }
   res.send("No, today is not holiday!");
+});
+
+server.get("/holidays/:idMonth", (req, res) => {
+  const monthId = parseInt(req.params.idMonth);
+
+  const holidaysInDesiredMonth = getHolidaysByMonth(monthId);
+
+  if (holidaysInDesiredMonth.length === 0) {
+    res.send("There aren't any holidays this month!");
+  }
+
+  res.send(holidaysInDesiredMonth);
 });
 
 server.listen(5000, () => {
